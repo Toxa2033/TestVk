@@ -1,0 +1,42 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
+
+    <!-- TODO: Update blank fragment layout -->
+
+      <ImageView
+           android:layout_width="match_parent"
+           android:layout_height="match_parent"
+           android:id="@+id/videoPrevImageView" />
+
+       <ImageView
+           android:layout_width="40dp"
+           android:layout_height="40dp"
+           android:id="@+id/imageView3"
+           android:layout_gravity="center"
+           android:src="@drawable/play" />
+
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:textAppearance="?android:attr/textAppearanceLarge"
+           android:text="Large Text"
+           android:id="@+id/durationTextView"
+           android:layout_gravity="right|bottom"
+           android:textSize="12sp"
+           android:textColor="#fff"
+           style="@style/InfoOverlayText" />
+
+       <TextView
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:textAppearance="?android:attr/textAppearanceLarge"
+           android:text="Large Text"
+           android:id="@+id/titleTextView"
+           android:layout_gravity="left|top"
+           android:textSize="12sp"
+           android:textColor="#fff"
+           style="@style/InfoOverlayText" />
+
+   </FrameLayout>
