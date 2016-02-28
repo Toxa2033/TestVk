@@ -1,7 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <!-- TODO: Update blank fragment layout -->
 
@@ -13,7 +13,7 @@
        <ImageView
            android:layout_width="40dp"
            android:layout_height="40dp"
-           android:id="@+id/imageView3"
+           android:id="@+id/playImage"
            android:layout_gravity="center"
            android:src="@drawable/play" />
 
@@ -39,4 +39,26 @@
            android:textColor="#fff"
            style="@style/InfoOverlayText" />
 
-   </FrameLayout>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/layout" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:id="@+id/qestionTextView"
+            android:textSize="14sp"
+            android:layout_gravity="center_horizontal" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/photoImage"
+        android:layout_gravity="center_horizontal" />
+
+</FrameLayout>

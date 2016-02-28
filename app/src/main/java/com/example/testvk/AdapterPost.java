@@ -2,7 +2,6 @@ package com.example.testvk;
 
 import android.app.FragmentManager;
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.LayoutInflater;
@@ -16,6 +15,8 @@ import com.felipecsl.asymmetricgridview.library.Utils;
 import com.felipecsl.asymmetricgridview.library.model.AsymmetricItem;
 import com.felipecsl.asymmetricgridview.library.widget.AsymmetricGridView;
 import com.squareup.picasso.Picasso;
+
+import org.solovyev.android.views.llm.LinearLayoutManager;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -95,14 +96,13 @@ public class AdapterPost extends RecyclerView.Adapter<AdapterPost.VideoViewHolde
         ArrayList<Atachment> attach=new ArrayList<>();
         if(item.attachments.size()>0) {
 
-            for (Atachment att:item.attachments) {
-                CustomLinearLayoutManager linearLayoutManager = new CustomLinearLayoutManager(mContext);
-                videoViewHolder.recyclerView.setLayoutManager(linearLayoutManager);
-                AdapterAttachment adapter = new AdapterAttachment(mContext, att);
-                adapter.notifyDataSetChanged();
+           // for (Atachment att:item.attachments) {
+            final LinearLayoutManager layoutManager = new org.solovyev.android.views.llm.LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false);
+                videoViewHolder.recyclerView.setLayoutManager(layoutManager);
+                AdapterAttachment adapter = new AdapterAttachment(mContext, item.attachments);
                 videoViewHolder.recyclerView.setAdapter(adapter);
 
-            }
+           // }
         }
 
     }
@@ -191,7 +191,6 @@ public class AdapterPost extends RecyclerView.Adapter<AdapterPost.VideoViewHolde
             }
         }
     }
-
 
         @Override
         public int getItemCount () {
