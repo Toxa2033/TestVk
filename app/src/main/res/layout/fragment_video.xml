@@ -53,6 +53,22 @@
             android:id="@+id/qestionTextView"
             android:textSize="14sp"
             android:layout_gravity="center_horizontal" />
+
+        <RadioGroup
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioGroup"
+            android:layout_marginTop="10dp">
+
+        </RadioGroup>
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Голосовать"
+            android:id="@+id/voteButton"
+            android:layout_gravity="bottom|center_horizontal"
+            android:layout_marginTop="10dp" />
     </LinearLayout>
 
     <ImageView

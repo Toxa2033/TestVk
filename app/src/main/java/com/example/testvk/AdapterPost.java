@@ -18,8 +18,12 @@ import com.squareup.picasso.Picasso;
 
 import org.solovyev.android.views.llm.LinearLayoutManager;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 /**
@@ -76,9 +80,18 @@ public class AdapterPost extends RecyclerView.Adapter<AdapterPost.VideoViewHolde
         videoViewHolder.likeImage.setImageDrawable(mContext.getDrawable(R.drawable.heart));
 
 
+        Date temp = new Date(item.date*1000);
 
-        Date d=new Date(item.date*10000);
-        videoViewHolder.timeTextView.setText(d.getDay() + "." + d.getMonth() + "." + d.getYear());
+        SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
+       /* format.format(d)
+        if(calendar.get(Calendar.DAY_OF_MONTH)==d.getDate())
+        {
+            date="Сегодня в "+d.getTime();
+        }
+        else {
+            date=d.getDay()+"."+d.getMonth()+"."+d.getYear()+" в "+d.getTime();
+        }*/
+        videoViewHolder.timeTextView.setText(format.format(temp));
         if(item.text.toCharArray().length>=300)
         {
             videoViewHolder.textTextView.setText(item.text.substring(0,300)+"\n\t...\n Показать полностью");

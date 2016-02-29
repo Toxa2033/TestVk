@@ -114,9 +114,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResult(VKAccessToken res) {
                 Toast.makeText(MainActivity.this,"Вы успешно авторизовались", Toast.LENGTH_SHORT).show();
-                arrayWall.clear();
-                adapter.notifyDataSetChanged();
-                new GetWallPost().execute();
+                reCreateActivity();
             }
             @Override
             public void onError(VKError error) {
@@ -233,6 +231,9 @@ public class MainActivity extends AppCompatActivity {
         if(!VKSdk.isLoggedIn()) {
             getMenuInflater().inflate(R.menu.menu_main, menu);
         }
+        else {
+            getMenuInflater().inflate(R.menu.logout, menu);
+        }
         getMenuInflater().inflate(R.menu.pool, menu);
         return true;
     }
@@ -247,8 +248,9 @@ public class MainActivity extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             VKSdk.login(MainActivity.this, new String[]{VKScope.GROUPS, VKScope.WALL});
+
         }
-        if(id==R.id.poll)
+            if(id==R.id.poll)
         {
             if(!isOnlyPool) {
                 isOnlyPool = true;
@@ -262,6 +264,18 @@ public class MainActivity extends AppCompatActivity {
             adapter.notifyDataSetChanged();
             new GetWallPost().execute();
         }
+        if(id==R.id.logout)
+        {
+            VKSdk.logout();
+            reCreateActivity();
+        }
         return super.onOptionsItemSelected(item);
+    }
+
+    void reCreateActivity()
+    {
+        Intent i = new Intent(this,MainActivity.class);
+        finish();
+        startActivity(i);
     }
 }
