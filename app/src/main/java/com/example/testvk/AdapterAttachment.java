@@ -1,61 +1,27 @@
 package com.example.testvk;
 
-import android.app.ActionBar;
-import android.app.FragmentManager;
 import android.content.Context;
-import android.content.SharedPreferences;
-import android.graphics.drawable.ClipDrawable;
-import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.LayerDrawable;
 import android.os.AsyncTask;
-import android.support.v4.util.Pools;
-import android.support.v4.view.GravityCompat;
 import android.support.v7.widget.RecyclerView;
-import android.util.AttributeSet;
-import android.util.JsonWriter;
-import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 import com.vk.sdk.VKAccessToken;
-import com.vk.sdk.VKScope;
 import com.vk.sdk.VKSdk;
-import com.vk.sdk.api.VKApi;
-import com.vk.sdk.api.VKApiConst;
-import com.vk.sdk.api.VKParameters;
-import com.vk.sdk.api.VKRequest;
-import com.vk.sdk.api.model.VKApiPoll;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Date;
 
 
 public class AdapterAttachment extends RecyclerView.Adapter<AdapterAttachment.ViewHolder> {
@@ -66,9 +32,7 @@ public class AdapterAttachment extends RecyclerView.Adapter<AdapterAttachment.Vi
     Long dur;
     String title;
     int count;
-    public static SharedPreferences sharedPreferences;
-    // это будет именем файла
-    public static final String APP_PREFERENCES = "vote";
+
     public AdapterAttachment(Context context,ArrayList<Atachment> post) {
         this.mContext = context;
         this.post = post;
@@ -76,12 +40,13 @@ public class AdapterAttachment extends RecyclerView.Adapter<AdapterAttachment.Vi
 
 
 
-
+        //раньше  было разделение по лэйаутам, но в один прекрасный момент это перестало работать
+            // пришлось выкручиваться
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
         View v=null;
        // if(type.equals("video")) {
-             v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.fragment_video, viewGroup, false);
+             v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.item_attachments, viewGroup, false);
      /*   }
         else if(type.equals("photo"))
         {
@@ -106,8 +71,9 @@ public class AdapterAttachment extends RecyclerView.Adapter<AdapterAttachment.Vi
         type = post.get(i).type;
         Display display = ((WindowManager) MainActivity.context.getSystemService(MainActivity.context.WINDOW_SERVICE)).getDefaultDisplay();
         int width = display.getWidth();
-        int height = display.getHeight();
-
+        
+        
+        //Смотрим тип и в зависимости от него отображаем или скрываем вьюхи и выводим данные 
         if(type.equals("photo")) {
 
             controlPhoto(View.VISIBLE,videoViewHolder);
@@ -138,11 +104,11 @@ public class AdapterAttachment extends RecyclerView.Adapter<AdapterAttachment.Vi
         else if(type.equals("poll"))
         {
 
-            controlPhoto(View.GONE,videoViewHolder);
-            controlVideo(View.GONE,videoViewHolder);
+            controlPhoto(View.GONE, videoViewHolder);
+            controlVideo(View.GONE, videoViewHolder);
             controlPoll(View.VISIBLE,videoViewHolder);
 
-            ArrayList<Long>voteIds=new ArrayList<>();
+            ArrayList<Long>answerIDs=new ArrayList<>(); //список id ответов
             videoViewHolder.titlePoolTextView.setText(post.get(i).poll.question);
             ArrayList<VkPollAnswer>  pollAnswer= VkPoll.getPollAnswers(post.get(i).poll.answers_json);
             LinearLayout.LayoutParams lpView = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -150,25 +116,29 @@ public class AdapterAttachment extends RecyclerView.Adapter<AdapterAttachment.Vi
 
 
             lpView.setMargins(10, 5, 10, 0);
+
+            //смотрим злогинен, проверяю  голосовали ранее
             if(VKSdk.isLoggedIn()) {
                 if(new VkPoll().checkYouVote(post.get(i).poll.id,mContext))
                 {
+                    //выводим результаты опроса
                     viewResultPoll(pollAnswer,videoViewHolder,lpView);
                 }
                 else {
-
+                            //выводим радио буттоны для голосования
                     for(int j=0; j<pollAnswer.size(); j++) {
                         RadioButton rb = new RadioButton(mContext);
                         rb.setText(pollAnswer.get(j).text);
                         rb.setId(j);
                         videoViewHolder.radioGroup.addView(rb, lpView);
-                        voteIds.add(pollAnswer.get(j).id);
+                        answerIDs.add(pollAnswer.get(j).id);
                     }
-                    videoViewHolder.setDateForVote(post.get(i).poll.id,voteIds,post.get(i).poll.owner_id,pollAnswer,lpView,videoViewHolder);
+                    videoViewHolder.setDateForVote(post.get(i).poll.id,answerIDs,post.get(i).poll.owner_id,pollAnswer,lpView,videoViewHolder);
                 }
 
             }
             else {
+                //предлогаем залогинеться
                 videoViewHolder.voteButton.setVisibility(View.GONE);
                 TextView tv = new TextView(mContext);
                 tv.setText("Для просмотра результатов опроса авторизуйтесь");
@@ -208,7 +178,7 @@ public class AdapterAttachment extends RecyclerView.Adapter<AdapterAttachment.Vi
     }
 
 
-
+    //Управление видимостью вьюх
     void controlVideo(int variosVisible, ViewHolder view) //View.GONE example
     {
         view.play.setVisibility(variosVisible);
@@ -230,6 +200,9 @@ public class AdapterAttachment extends RecyclerView.Adapter<AdapterAttachment.Vi
         view.photoImage.setVisibility(variosVisible);
     }
 
+
+
+        //продлжительность видео
     String getDuration(long duration)
     {
         String result="";
@@ -303,6 +276,7 @@ public class AdapterAttachment extends RecyclerView.Adapter<AdapterAttachment.Vi
 
             @Override
             protected Void doInBackground(Integer... params) {
+                //голосуем
                 new VkPoll().vote(poll_id, answer_id.get(params[0]), owner_id, mContext);
                 return null;
             }
@@ -310,6 +284,7 @@ public class AdapterAttachment extends RecyclerView.Adapter<AdapterAttachment.Vi
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
+                //выводим результаты
                 new VkPoll().voted(poll_id,mContext);
                 voteButton.setVisibility(View.GONE);
                 radioGroup.setVisibility(View.GONE);
@@ -317,7 +292,7 @@ public class AdapterAttachment extends RecyclerView.Adapter<AdapterAttachment.Vi
 
             }
         }
-
+            //отлавливаем нажатие на кнопку и голосуем в отдельном потоке
         @Override
         public void onClick(View v) {
             int checkedRadioButtonId = radioGroup.getCheckedRadioButtonId();

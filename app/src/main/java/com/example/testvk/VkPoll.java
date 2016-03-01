@@ -75,9 +75,9 @@ public class VkPoll implements Serializable {
 
 
 
-    //http://vk.com/dev/polls.getVoters
-    public ArrayList<User> getPollVoters(long poll_id, long owner_id, Collection<Long> answer_ids, /*Long count, Long offset,*/ String fields) throws JSONException, IOException, KException {
-        Params params = new Params("polls.getVoters");
+   //http://vk.com/dev/polls.getVoters
+  //  public ArrayList<User> getPollVoters(long poll_id, long owner_id, Collection<Long> answer_ids, /*Long count, Long offset,*/ String fields) throws JSONException, IOException, KException {
+  /*       Params params = new Params("polls.getVoters");
         params.put("owner_id", owner_id);
         params.put("poll_id", poll_id);
         params.put("answer_ids", arrayToString(answer_ids));
@@ -89,12 +89,11 @@ public class VkPoll implements Serializable {
         JSONObject object = (JSONObject)response.get(0);
         JSONObject array2 = object.optJSONObject("users");
         JSONArray array=array2.optJSONArray("items");
-        //TODO for others answer_ids
         return User.parseUsers(array);
-    }
+    }*/
 
 
-    <T> String arrayToString(Collection<T> items) {
+ /*   <T> String arrayToString(Collection<T> items) {
         if(items==null)
             return null;
         String str_cids = "";
@@ -104,8 +103,9 @@ public class VkPoll implements Serializable {
             str_cids+=item;
         }
         return str_cids;
-    }
+    }*/
 
+    //проверяет голосовал ли ты
   public  boolean checkYouVote(long pool_id, Context context)
     {
         if(VKSdk.isLoggedIn()) {
@@ -136,7 +136,9 @@ public class VkPoll implements Serializable {
 
 
 
-
+    // происходит запись файл айди опроса
+    // сделано так т.к. проверять всех голосовавших юзеров в опросе + подгружать все остольное слишком затратно
+    //если по хорошему то для опроса нужен свой фрагмен/активити и там уже все что нужно проверять и голосовать
    public boolean voted(long pool_id,Context context)
     {
 
@@ -167,6 +169,7 @@ public class VkPoll implements Serializable {
         return false;
     }
 
+    //добовляет голос в опрос
     private  int addPollVote(long poll_id, long answer_id, long owner_id, long topic_id, String captcha_key, String captcha_sid) throws JSONException, IOException, KException {
         Params params = new Params("polls.addVote");
         params.put("owner_id", owner_id);

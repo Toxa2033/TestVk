@@ -34,20 +34,20 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    final static int OWNER_ID=-56546810;
-    final static int COUNT_ALL=30;
-    static int COUNT_POLL=99;
-     int COUNT_OFFSET=0;
-    final static int DOMAIN=56546810;
-    ArrayList<WallMessage> arrayWall=new ArrayList<>();
+    final static int OWNER_ID=-56546810; //айди группы
+    final static int COUNT_ALL=30; //количество всех получаемых постов
+    static int COUNT_POLL=99; //количество постов получаемых, если выбранны опросы
+     int COUNT_OFFSET=0; //сдвиг, для последующей подгрузки постов
+    final static int DOMAIN=56546810; //айди группы без "-" в начали
+    ArrayList<WallMessage> arrayWall=new ArrayList<>(); //список постов
     AdapterPost adapter;
     RecyclerView recyclerView;
     public static Context context;
     public static String titleGroup;
-    public static String urlPostr;
+    public static String urlPostr; //урл постера
     SwipeRefreshLayout refreshLayout;
-    boolean isLoading;
-    boolean isOnlyPool;
+    boolean isLoading;  //идет загрузка или нет
+    boolean isOnlyPool; //выбраны только опросы или нет
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,8 +58,7 @@ public class MainActivity extends AppCompatActivity {
         context=this;
         refreshLayout=(SwipeRefreshLayout)findViewById(R.id.swipe_container);
         recyclerView =(RecyclerView)findViewById(R.id.view);
-        FragmentManager fManager=getFragmentManager();
-        adapter=new AdapterPost(MainActivity.this, arrayWall,fManager);
+        adapter=new AdapterPost(MainActivity.this, arrayWall);
        final LinearLayoutManager llm = new LinearLayoutManager(this);
         llm.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(llm);
@@ -87,9 +86,9 @@ public class MainActivity extends AppCompatActivity {
                 int totalItemCount = llm.getItemCount();//сколько всего элементов
                 int firstVisibleItems = llm.findFirstVisibleItemPosition();//какая позиция первого элемента
 
-                if (!isLoading) {//проверяем, грузим мы что-то или нет, эта переменная должна быть вне класса  OnScrollListener
+                if (!isLoading) {//проверяем, грузим мы что-то или нет
                     if ((visibleItemCount + firstVisibleItems) >= totalItemCount) {
-                        isLoading = true;//ставим флаг что мы попросили еще элемены
+                        isLoading = true;
                         new GetWallPost().execute();
                         }
 
@@ -128,12 +127,12 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
+        //получаем посты
     class GetWallPost extends AsyncTask<Void,Void,ArrayList<WallMessage>>
     {
         @Override
         protected ArrayList<WallMessage> doInBackground(Void... params) {
-            VKRequest gr=VKApi.groups().getById(VKParameters.from(VKApiConst.GROUP_ID, DOMAIN));
+            VKRequest gr=VKApi.groups().getById(VKParameters.from(VKApiConst.GROUP_ID, DOMAIN)); //получаем название и аву группы
             isLoading=true;
 
             gr.executeWithListener(new VKRequest.VKRequestListener() {
@@ -152,6 +151,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
 
+            //в зависимости от переменной получаем либо 30 либо 99 постов
             VKRequest request;
                 if(!isOnlyPool) {
                     request = VKApi.wall().get(VKParameters.from(VKApiConst.FIELDS, "",
@@ -172,6 +172,7 @@ public class MainActivity extends AppCompatActivity {
                         for (int i = 0; i < (isOnlyPool ? COUNT_POLL : COUNT_ALL); i++) { //если выбраны опросы то используется count_poll
                             JSONObject k = j.getJSONObject(i);
                             WallMessage wall = WallMessage.parse(k);
+                            //в зависимости от переменной либо фильтруем данные на предмет опросов либо все подрят добавляем
                             if(isOnlyPool) {
                                 if(!wall.attachments.isEmpty()) {
                                     for (Atachment item: wall.attachments) {

@@ -26,18 +26,14 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
 
-/**
- * Created by 95tox on 25.02.2016.
- */
+
 public class AdapterPost extends RecyclerView.Adapter<AdapterPost.VideoViewHolder> {
 
     private final Context mContext;
     ArrayList<WallMessage> post;
-    FragmentManager fManager;
-    public AdapterPost(Context context, ArrayList<WallMessage> post, FragmentManager fManager) {
+    public AdapterPost(Context context, ArrayList<WallMessage> post) {
         this.mContext = context;
         this.post=post;
-        this.fManager=fManager;
     }
 
     @Override
@@ -83,14 +79,7 @@ public class AdapterPost extends RecyclerView.Adapter<AdapterPost.VideoViewHolde
         Date temp = new Date(item.date*1000);
 
         SimpleDateFormat format = new SimpleDateFormat("dd.MM.yyyy HH:mm");
-       /* format.format(d)
-        if(calendar.get(Calendar.DAY_OF_MONTH)==d.getDate())
-        {
-            date="Сегодня в "+d.getTime();
-        }
-        else {
-            date=d.getDay()+"."+d.getMonth()+"."+d.getYear()+" в "+d.getTime();
-        }*/
+
         videoViewHolder.timeTextView.setText(format.format(temp));
         if(item.text.toCharArray().length>=300)
         {
@@ -106,7 +95,6 @@ public class AdapterPost extends RecyclerView.Adapter<AdapterPost.VideoViewHolde
         videoViewHolder.likeCountTextView.setText(String.valueOf(item.like_count));
 
 
-        ArrayList<Atachment> attach=new ArrayList<>();
         if(item.attachments.size()>0) {
 
            // for (Atachment att:item.attachments) {
