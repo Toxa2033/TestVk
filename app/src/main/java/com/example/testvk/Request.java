@@ -18,9 +18,7 @@ import java.net.URL;
 import java.security.KeyException;
 import java.util.zip.GZIPInputStream;
 
-/**
- * Created by 95tox on 29.02.2016.
- */
+
 public class Request {
     static final String TAG="Api";
 

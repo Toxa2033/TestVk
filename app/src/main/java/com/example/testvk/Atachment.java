@@ -39,17 +39,11 @@ public class Atachment implements Serializable {
                 else if (attachment.type.equals("poll")) {
                     attachment.poll = VkPoll.parse(json_attachment.getJSONObject("poll"));
                     if (attachment.poll.owner_id == 0) {
-                        //это устарело потому что поля copy_owner_id больше нет при парсинге
-                        //if(copy_owner_id!=0)
-                        //    attachment.poll.owner_id=copy_owner_id;
-                        //else
+
                         attachment.poll.owner_id = from_id;
                     }
                 }
-                //это устарело потому что поля copy_owner_id больше нет при парсинге
-                //if(copy_owner_id!=0)
-                //    attachment.poll.owner_id=copy_owner_id;
-                //else
+
                 if (attachments.equals("wall"))
                     attachment.wallMessage = WallMessage.parse(json_attachment.getJSONObject("wall"));
                 attachments_arr.add(attachment);
